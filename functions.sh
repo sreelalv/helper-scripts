@@ -89,5 +89,26 @@ p(){      #Project
   fi
 }
 
+aria(){ 
+	local input="$1"
+	local _aria_="aria2c -x 16 -s 16 -j 8"
+	local dir="-d /home/sree/Downloads/aria/"
+	local con="--continue=true" 
+	local overwrite="--allow-overwrite"
+	local torrent="--enable-dht=true --bt-enable-lpd=true --bt-max-peers=50 --seed-time=0"
 
+	if [[ $input =~ *torrent || $input =~ ^magnet ]] ; then
+		_aria_="${_aria_} ${torrent}"
+	fi
+	_aria_="${_aria_} ${dir}" 
+
+	if [[ "$2" = "-o" || "$2" = "overwrite" ]] ; then 
+		_aria_="${_aria_} ${overwrite}"
+	
+	elif [[ "$2" = "-c" || "$2" = "--conti*" ]] ; then 
+		_aria_="${_aria_} ${con}"
+	fi
+	echo "$_aria_ $input"
+	$_aria_ "$input" && (( $? == 0 )) && exit 
+}
 
